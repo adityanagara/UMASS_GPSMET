@@ -1,0 +1,1 @@
+C:\Python27\python.exe C:\Users\GPSMET1\Desktop\Python_Scripts\Push_N_Clear.py > C:\log_files\RINEX_o.%date:~-4%%date:~4,2%%date:~7,2%.%time::=%.log 2>&1
