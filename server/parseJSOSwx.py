@@ -13,9 +13,8 @@ import DFWnet
 DFW = DFWnet.CommonData()
 
 site = 'nwsd'
-# /home/aditya/Dropbox/Final_Data/RINEX_files/2015/236
 
-yr = '2015'
+yr = str(time.gmtime().tm_year)
 
 if time.gmtime().tm_hour == 0:
     doy = str(time.gmtime().tm_yday - 1).zfill(3)
@@ -24,21 +23,11 @@ else:
 
 current_hour = time.gmtime().tm_hour
 
-# Convert UTS to CST
+# Convert UTC to CST
 current_hour_cst = current_hour-6
 
 DFW.doytodate(int(yr[-2:]),int(doy))
 
-# Get previous day of the month 
-#if int(doy) > 1:
-#    
-#    DFW.doytodate(int(yr[-2:]),int(doy) - 1)
-#    
-#else:
-#    DFW.doytodate(int(yr[-2:]) -1,365)
-       
-
-print DFW.mon,DFW.day
 
 # Find the starting time index
 data = np.loadtxt('graphs.txt',dtype='S')
@@ -59,15 +48,11 @@ else:
 start_idx = np.where(np.logical_and(data[:,0] == current_date,data[:,1] == str(current_hour_cst -1).zfill(2) +':00'))[0][0]
 
 
-
 end_idx = np.where(np.logical_and(data[:,0] == current_date,data[:,1] ==  str(current_hour_cst).zfill(2)+':00'))[0][0]
 
 tempVals = filter(lambda x: float(x[1].split(':')[1]) % 5.0 == 0,data[start_idx:end_idx,:])
 
 
-print 'Verify with these values here---------------------'
-print tempVals
-print '--------------------------------------------------'
 rhs = map(lambda x: x[-2],tempVals)
 temps = map(lambda x: (float(x[2]) -32) *(5.0/9.0),tempVals)
 
@@ -75,10 +60,10 @@ temps = map(lambda x: '%.1f'%x,temps)
 
 
 # Get the input met file
-base_met_path = '/home/aditya/Dropbox/Final_Data/RINEX_files/' + yr + os.sep  + doy + os.sep
+base_met_path = '/home/aditya/Dropbox/Final_Data/RINEX_files/' + yr + os.sep  + doy 
 met_file = site + doy + '0.' + yr[-2:] + 'm'
 
-##/var/www/html/gpsmet/CASA/Rinex/2015/nwsd/met/238
+
 out_base = '/var/www/html/gpsmet/CASA/Rinex/' + yr + os.sep +site + os.sep +'met' + os.sep + doy
 
 if not os.path.exists(out_base + os.sep + met_file):

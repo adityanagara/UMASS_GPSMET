@@ -139,7 +139,9 @@ def remove_brdc_comments(doy):
     with open(brdc_file,'w+') as f2:
         f2.writelines(initial_lines)
   
-    
+
+year = str(time.gmtime().tm_year)
+
 if time.gmtime().tm_hour == 0:
     doy = str(time.gmtime().tm_yday - 1).zfill(3)
 else:
@@ -153,9 +155,7 @@ long_baseline_station = ['ac20','p019','conz','unbj','gold','amc2','areq','drao'
 download_ref_stations(long_baseline_station)
 
 download_DFW_and_nav(doy,noaa_sites)
-
 list.extend(noaa_sites,long_baseline_station)
-
 merge_rinex_files(doy,noaa_sites)
 remove_brdc_comments(doy)
     
