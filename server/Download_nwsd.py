@@ -47,14 +47,10 @@ initial=os.getcwd()
 os.chdir(initial)
 alpha,sigma = DFW.make_alpha_dict()
 
-
-
-
 def change_nwsd_header(doy):
     global site
     base_path = '/var/www/html/gpsmet/CASA/Rinex/'
     yr = str(time.gmtime().tm_year)
-    
     nwsd = base_path + yr + os.sep +site + os.sep +'obs' + os.sep + doy +os.sep + site + doy + '0.' + str(time.gmtime().tm_year)[-2:] + 'o'
     k=open(nwsd,'r')
     p=k.readlines()
@@ -72,8 +68,7 @@ def change_nwsd_header(doy):
     p[5]=replace_5
     k.writelines(p)
     k.close()
-    DFWnet_path = '/home/aditya/UMASS/DFWnet/net1/2015/rinex/'
-    
+    DFWnet_path = '/home/aditya/UMASS/DFWnet/net1/'+ str(time.gmtime().tm_year) + '/rinex/'
     subprocess.call(['mv','-f',nwsd,DFWnet_path])
     
     
@@ -84,16 +79,12 @@ def merge_rinex_o(doy,site):
     subprocess.call(['sh_merge_rinex','-site',site,'-year',str(time.gmtime().tm_year),'-days',doy])
 
 def copy_met_file(doy):
-    source_ = '/var/www/html/gpsmet/CASA/Rinex/2015/nwsd/met/' + doy + os.sep + 'nwsd' + doy + '0.' + str(time.gmtime().tm_year)[-2:] + 'm'
+    source_ = '/var/www/html/gpsmet/CASA/Rinex/' +str(time.gmtime().tm_year) + '/nwsd/met/' + doy + os.sep + 'nwsd' + doy + '0.' + str(time.gmtime().tm_year)[-2:] + 'm'
     dest_ = '/home/aditya/UMASS/DFWnet/net1/' + str(time.gmtime().tm_year) + os.sep + 'met/'  
     subprocess.call(['cp','-f',source_,dest_])
     
-
 merge_rinex_o(doy,site)
-
 change_nwsd_header(doy)
-
-
 copy_met_file(doy)
 os.chdir(initial)
 

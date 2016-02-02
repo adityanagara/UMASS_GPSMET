@@ -49,13 +49,13 @@ else:
 
 # find the starting index in the array corresponding to the current CST hour
 start_idx = np.where(np.logical_and(data[:,0] == current_date,data[:,1] == str(current_hour_cst -1).zfill(2) +':00'))[0][0]
-
+print current_hour_cst
 # find the ending index of the JSOS data array
 end_idx = np.where(np.logical_and(data[:,0] == current_date,data[:,1] ==  str(current_hour_cst).zfill(2)+':00'))[0][0]
 
 # Strip the values from starting index to the ending index
 tempVals = filter(lambda x: float(x[1].split(':')[1]) % 5.0 == 0,data[start_idx:end_idx,:])
-
+print tempVals
 # Parse for rehative humidity, temperature
 rhs = map(lambda x: x[-2],tempVals)
 temps = map(lambda x: (float(x[2]) -32) *(5.0/9.0),tempVals)
@@ -105,6 +105,10 @@ else:
         metLines = m.readlines()
         start_index = hour_to_file_index[current_hour - 1]
         end_index = hour_to_file_index[current_hour]
+        print start_index
+        print end_index
+        print out_base + os.sep + met_file
+        print metLines
         with open(out_base + os.sep + met_file,'a') as mout:
             for l, t, r in zip(metLines[start_index:end_index],temps,rhs):
                 l = l.strip()

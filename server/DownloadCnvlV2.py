@@ -86,7 +86,6 @@ def download_from_node():
     download_file_to(doy,'nav')
     if file_to_get_nav in file_list:
         nfile_nav=open(file_to_get_nav,'wb')
-        #print '>>>>>>>>>>>>>>>>>>>>>>>>' + file_to_get_nav
         ftp2.retrbinary('RETR '+file_to_get_nav,nfile_nav.write)
         nfile_nav.close()
         print 'we got the file >>>>>>>> ' + file_to_get_nav
@@ -128,15 +127,13 @@ def download_from_node():
     print 'We got the file from the node'
     ftp2.close()
 
-
+# This function changes the header of the RINEX files so that
+# the antenna and receiver can be read by GAMIT and adds other details to it
 def change_cnvl_header(doy):
     global site
     base_path = '/var/www/html/gpsmet/CASA/Rinex/'
-    #download_file_to= base_path + yr + os.sep +site + os.sep +'obs' + os.sep + doy
     yr = str(time.gmtime().tm_year)
-    
     cnvl = base_path + yr + os.sep +site + os.sep +'obs' + os.sep + doy +os.sep + site + doy + '0.' + str(time.gmtime().tm_year)[-2:] + 'o'
-#    cnvl='/home/aditya/UMASS/20141028/TEST/2014/rinex' +os.sep + site + doy + '0.' + str(time.gmtime().tm_year)[-2:] + 'o'
     k=open(cnvl,'r')
     p=k.readlines()
     k.close()
@@ -153,35 +150,23 @@ def change_cnvl_header(doy):
     p[5]=replace_5
     k.writelines(p)
     k.close()
-    DFWnet_path = '/home/aditya/UMASS/DFWnet/net1/2015/rinex/'
-    
+    DFWnet_path = '/home/aditya/UMASS/DFWnet/net1/' +str(time.gmtime().tm_year) + '/rinex/'    
     subprocess.call(['mv','-f',cnvl,DFWnet_path])
-    
-#    shutil.move(cnvl,DFWnet_path)
-    
 
-
+# Call GAMIT command to merge all hourly files to single day file
 def merge_rinex_o(doy,site):
-#    def download_file_to(doy,obs_nav_met):
     download_file_to(doy,'obs')
     subprocess.call(['sh_merge_rinex','-site',site,'-year',str(time.gmtime().tm_year),'-days',doy])
 
+# Comy met file from common database to experiment folder for IPW processing
 def copy_met_file(doy):
-    source_cnvl = '/var/www/html/gpsmet/CASA/Rinex/2015/cnvl/met/' + doy + os.sep + 'cnvl' + doy + '0.' + str(time.gmtime().tm_year)[-2:] + 'm'
+    source_cnvl = '/var/www/html/gpsmet/CASA/Rinex/' + str(time.gmtime().tm_year) + '/cnvl/met/' + doy + os.sep + 'cnvl' + doy + '0.' + str(time.gmtime().tm_year)[-2:] + 'm'
     dest_cnvl = '/home/aditya/UMASS/DFWnet/net1/' + str(time.gmtime().tm_year) + os.sep + 'met/'  
     subprocess.call(['cp','-f',source_cnvl,dest_cnvl])
-    
-
-'''
-Change the cnvl header
-
-'''
 
 download_from_node()
 merge_rinex_o(doy,site)
 change_cnvl_header(doy)
-
-
 copy_met_file(doy)
 os.chdir(initial)
 

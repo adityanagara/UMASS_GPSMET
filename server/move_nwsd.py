@@ -43,22 +43,24 @@ def move_nwsd(site,yr,doy):
     nav_files = filter(lambda x: x[-4:] == '.' + yr[-2:] + 'n',files_to_move)
     print obs_files
     for o in obs_files:
-#        shutil.move(dropbox_path + doy + os.sep + o,obs_path + os.sep)
+        shutil.move(dropbox_path + doy + os.sep + o,obs_path + os.sep)
         print(dropbox_path + doy + os.sep + o,obs_path + os.sep)
 
     for n in nav_files:
-#        shutil.move(dropbox_path + doy + os.sep + n,nav_path + os.sep)
+        shutil.move(dropbox_path + doy + os.sep + n,nav_path + os.sep)
         print(dropbox_path + doy + os.sep + n,nav_path + os.sep)
         
 
 
     print 'done'
 
-doys = [str(x).zfill(3) for x in range(1,13)]
+#doys = [str(x).zfill(3) for x in range(1,13)]
 
-for doy in doys:
-    print doy
-    move_nwsd(site,yr,doy)
+move_nwsd(site,yr,doy)
+
+#for doy in doys:
+#    print doy
+#    move_nwsd(site,yr,doy)
 
 
 
